@@ -1,0 +1,1 @@
+export const DEFAULT_QUESTION_TTL_SECONDS = 15 * 60;

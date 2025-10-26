@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  api:
+    build: .
+    container_name: quiz-api
+    # command:
+    #   - sh
+    #   - -c
+    #   - pnpm exec prisma migrate deploy && node dist/src/main.js
+    environment:
+      NODE_ENV: development
+      PORT: 4200
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/quiz?schema=public
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - '4200:4200'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: quiz-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: quiz
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-dataa:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: quiz-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-dataa:
+  redis-data:

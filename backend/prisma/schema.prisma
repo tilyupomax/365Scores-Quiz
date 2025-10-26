@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String        @id @default(uuid())
+  createdAt DateTime      @default(now())
+  sessions  QuizSession[]
+  scores    Score[]
+}
+
+model Question {
+  id            Int            @id @default(autoincrement())
+  text          String
+  order         Int            @default(0)
+  answerOptions AnswerOption[]
+  responses     Response[]     @relation("QuestionResponses")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  currentSessions QuizSession[] @relation("CurrentQuestion")
+}
+
+model AnswerOption {
+  id         Int      @id @default(autoincrement())
+  text       String
+  isCorrect  Boolean  @default(false)
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId Int
+  responses  Response[] @relation("OptionResponses")
+}
+
+model QuizSession {
+  id          String           @id @default(uuid())
+  user        User             @relation(fields: [userId], references: [id])
+  userId      String
+  score       Int              @default(0)
+  isFinished  Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  completedAt DateTime?
+  responses   Response[]
+  currentQuestionId         Int?
+  currentQuestion           Question?          @relation("CurrentQuestion", fields: [currentQuestionId], references: [id])
+  currentQuestionExpiresAt  DateTime?
+  @@index([userId])
+}
+
+model Response {
+  id               Int          @id @default(autoincrement())
+  session          QuizSession  @relation(fields: [sessionId], references: [id])
+  sessionId        String
+  question         Question     @relation(name: "QuestionResponses", fields: [questionId], references: [id])
+  questionId       Int
+  selectedOption   AnswerOption @relation(name: "OptionResponses", fields: [selectedOptionId], references: [id])
+  selectedOptionId Int
+  correct          Boolean
+  answeredAt       DateTime     @default(now())
+
+  @@unique([sessionId, questionId])
+}
+
+model Score {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  value     Int
+  createdAt DateTime @default(now())
+
+  @@index([value, createdAt])
+}
