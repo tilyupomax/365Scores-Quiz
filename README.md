@@ -26,3 +26,5 @@ Next.js 16 App Router application featuring:
 
 **See [frontend/README.md](./frontend/README.md) for development setup and available pages.**
 
+### System design of application
+<img width="1402" height="601" alt="image" src="https://github.com/user-attachments/assets/a6121871-5386-4521-9912-d35a775afbb7" />
