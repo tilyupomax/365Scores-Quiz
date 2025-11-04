@@ -26,14 +26,14 @@ Next.js 16 App Router application featuring:
 
 **See [frontend/README.md](./frontend/README.md) for development setup and available pages.**
 
-### System design of application
+## System design of application
 <img width="1402" height="601" alt="image" src="https://github.com/user-attachments/assets/a6121871-5386-4521-9912-d35a775afbb7" />
 
-#### Authentication Flow
+### Authentication Flow
 
 The application does not include a dedicated user or cookie authentication endpoint. Instead, **authentication is enforced through a Nest.js Guard** that operates during the request lifecycle to control access and enrich incoming requests as needed.
 
-##### Guard Responsibilities
+#### Guard Responsibilities
 
 - Reads incoming cookies using `cookie-parser` to locate the `STICKY_USER_SESSION_COOKIE` token.  
 - Does not rely on a specific authentication route or bootstrap step.  
@@ -46,18 +46,18 @@ The application does not include a dedicated user or cookie authentication endpo
   - Loads the corresponding `USER` record from PostgreSQL.  
   - Attaches the loaded user to `request.sessionUser` for downstream handlers and controllers.
 
-##### Guard Scope
+#### Guard Scope
 
 - The guard is actively used for **quiz-related endpoints** to enforce authentication and session integrity.  
 - **Leaderboard endpoints** remain publicly accessible to all users, authenticated or not.
 
 ---
 
-#### Leaderboard Caching Flow
+### Leaderboard Caching Flow
 
 The leaderboard caching mechanism optimizes performance by introducing Redis as a fast, in-memory caching layer between the client and the database.
 
-##### Request Lifecycle
+#### Request Lifecycle
 
 1. **Client Request**  
    The user opens the leaderboard page. The browser sends a request to the **Next.js app**, which acts as both the frontend and a server interface.
@@ -79,7 +79,7 @@ The leaderboard caching mechanism optimizes performance by introducing Redis as 
 
 ---
 
-#### Operational Benefits
+### Operational Benefits
 
 - **Reduced Database Load:** Redis offloads frequent leaderboard reads from PostgreSQL.  
 - **Improved Performance:** Cached responses minimize latency for high-traffic leaderboard endpoints.  
