@@ -51,8 +51,6 @@ The application does not include a dedicated user or cookie authentication endpo
 - The guard is actively used for **quiz-related endpoints** to enforce authentication and session integrity.  
 - **Leaderboard endpoints** remain publicly accessible to all users, authenticated or not.
 
----
-
 ### Leaderboard Caching Flow
 
 The leaderboard caching mechanism optimizes performance by introducing Redis as a fast, in-memory caching layer between the client and the database.
@@ -76,8 +74,6 @@ The leaderboard caching mechanism optimizes performance by introducing Redis as 
 
 5. **Response Delivery**  
    Next.js returns the obtained leaderboard data (either from Redis or PostgreSQL) to the client, ensuring low-latency, consistent performance.
-
----
 
 ### Operational Benefits
 
